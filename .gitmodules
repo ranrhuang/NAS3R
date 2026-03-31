@@ -1,0 +1,4 @@
+[submodule "submodules/diff-gaussian-rasterization"]
+	path = submodules/diff-gaussian-rasterization
+	url = git@github.com:ranrhuang/diff-gaussian-rasterization.git
+	branch = camera
