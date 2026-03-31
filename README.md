@@ -9,7 +9,7 @@
     ·
     <a href="https://www.imperial.ac.uk/people/k.mikolajczyk">Krystian Mikolajczyk</a>
   </p>
-  <h3 align="center"><a href="https://arxiv.org/pdf/2603.27455">Paper</a> | <a href="https://ranrhuang.github.io/nas3r/">Project Page</a>  </h3>
+  <h3 align="center"><a href="https://arxiv.org/abs/2603.27455">Paper</a> | <a href="https://ranrhuang.github.io/nas3r/">Project Page</a>  </h3>
   <div align="center"></div>
 </p>
 <p align="center">
@@ -21,6 +21,7 @@
 
 <p align="center">
 <strong>NAS3R</strong> is a self-supervised feed-forward framework that jointly learns explicit 3D geometry and camera parameters with no ground-truth annotations and no pretrained priors.
+
 
 
 <!-- TABLE OF CONTENTS -->
@@ -64,8 +65,8 @@ cd NAS3R
 conda create -n nas3r python=3.11 -y
 conda activate nas3r
 pip install torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
-pip install -r requirements.txt
-pip install -e submodules/diff-gaussian-rasterization
+pip install -r requirements.txt --no-build-isolation
+pip install -e submodules/diff-gaussian-rasterization --no-build-isolation
 ```
 
 
@@ -74,7 +75,10 @@ Our models are hosted on [Hugging Face](https://huggingface.co/RanranHuang/NAS3R
 
 |                                                    Model name                                                    | Training resolutions | Training data | Training settings |
 |:----------------------------------------------------------------------------------------------------------------:|:--------------------:|:-------------:|:-------------:|
-|                 [re10k_nas3r.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r.ckpt)                  |        256x256       |     re10k     | RE10K, 2 views|
+|                 [re10k_nas3r.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r.ckpt)                  |        256x256       |     re10k     |  2 views|
+|                 [re10k_nas3r_multiview.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_multiview.ckpt)                  |        256x256       |     re10k     | 2-10 views|
+|                 [re10k_nas3r_pretrained.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained.ckpt)                  |        256x256       |     re10k     | 2 views, initialized by VGGT|
+|                 [re10k_nas3r_pretrained-I.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained-I.ckpt)                  |        256x256       |     re10k     | 2 views, initialized by VGGT, incorporate GT intrinsics|
 
 We assume the downloaded weights are located in the `checkpoints` directory.
 
@@ -88,12 +92,15 @@ Please refer to [DATASETS.md](DATASETS.md) for dataset preparation.
 
 
 ```bash
-# 2 view on NAS3R (VGGT-based architecture)
+# 2 view on NAS3R (VGGT-based architecture), for multi-view training, modify view_sampler.num_context_views
 python -m src.main +experiment=nas3r/random/re10k wandb.mode=online wandb.name=nas3r_re10k
 
 
 # Initialized by pretrained VGGT weights for better performance and stability.
 python -m src.main +experiment=nas3r/pretrained/re10k wandb.mode=online wandb.name=nas3r_re10k_pretrained
+
+# Initialized by pretrained VGGT weights and incorporate GT intrinsics for better performance and stability. 
+python -m src.main +experiment=nas3r/pretrained/re10k-I wandb.mode=online wandb.name=nas3r_re10k_pretrained-I
 
 ```
 
@@ -106,6 +113,29 @@ python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
     dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
     dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
     checkpointing.load=./checkpoints/re10k_nas3r.ckpt \
+    test.save_image=false 
+
+# RealEstate10K on NAS3R, 10 view
+python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
+    dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
+    dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
+    dataset.re10k.view_sampler.num_context_views=10 \
+    checkpointing.load=./checkpoints/re10k_nas3r_multiview.ckpt \
+    test.save_image=false 
+
+
+# RealEstate10K on NAS3R pretrained from VGGT
+python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
+    dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
+    dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
+    checkpointing.load=./checkpoints/re10k_nas3r_pretrained.ckpt \
+    test.save_image=false 
+
+# RealEstate10K on NAS3R pretrained from VGGT, incorporate GT intrinsics
+python -m src.main +experiment=nas3r/random/re10k-I mode=test wandb.name=re10k \
+    dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
+    dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
+    checkpointing.load=./checkpoints/re10k_nas3r_pretrained-I.ckpt \
     test.save_image=false 
 
 

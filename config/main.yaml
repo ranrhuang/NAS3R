@@ -60,8 +60,8 @@ train:
   freeze_aggregator: false
   freeze_intrinsics_head: false
 
-  random_drop_context_views: false
-  random_drop_target_views: false
+  random_drop_context_views: true
+  random_drop_target_views: true
 
   pretrain_camera_head: false
 
