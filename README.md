@@ -24,6 +24,7 @@
 
 
 
+
 <!-- TABLE OF CONTENTS -->
 <details open="open" style='padding: 10px; border-radius:5px 30px 30px 5px; border-style: solid; border-width: 1px;'>
   <summary>Table of Contents</summary>
@@ -73,15 +74,57 @@ pip install -e submodules/diff-gaussian-rasterization --no-build-isolation
 ## Pre-trained Checkpoints
 Our models are hosted on [Hugging Face](https://huggingface.co/RanranHuang/NAS3R) 🤗
 
-|                                                    Model name                                                    | Training resolutions | Training data | Training settings |
-|:----------------------------------------------------------------------------------------------------------------:|:--------------------:|:-------------:|:-------------:|
-|                 [re10k_nas3r.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r.ckpt)                  |        224x224       |     re10k     |  2 views|
-|                 [re10k_nas3r_multiview.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_multiview.ckpt)                  |        224x224       |     re10k     | 2-10 views|
-|                 [re10k_nas3r_pretrained.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained.ckpt)                  |        224x224       |     re10k     | 2 views, initialized by VGGT|
-|                 [re10k_nas3r_pretrained-I.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained-I.ckpt)                  |        224x224       |     re10k     | 2 views, initialized by VGGT, incorporate GT intrinsics|
-|                 [re10k_nas3r-m.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r-m.ckpt)                  |        256x256       |     re10k     |  2 views, MASt3R-style architecture|
-|                 [re10k_nas3r-m_pretrained.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r-m_pretrained.ckpt)                  |        256x256       |     re10k     |  2 views, initialized by MASt3R|
-|                 [re10k_nas3r-m_pretrained-I.ckpt]( https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r-m_pretrained-I.ckpt)                  |        256x256       |     re10k     |  2 views, initialized by MASt3R, incorporate GT intrinsics|
+<table>
+  <thead>
+    <tr>
+      <th>Model</th>
+      <th>Arch.</th>
+      <th>Init.</th>
+      <th>Resolution</th>
+      <th>Data</th>
+      <th>Views</th>
+      <th>Labels</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td colspan="7"><strong>NAS3R supports fully self-supervised training from random initialization, without any 3D labels.</strong></td></tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r.ckpt">re10k_nas3r.ckpt</a></td>
+      <td>VGGT</td><td>Random</td><td>224x224</td><td>RE10K</td><td>2</td><td>&#10007;</td>
+    </tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_multiview.ckpt">re10k_nas3r_multiview.ckpt</a></td>
+      <td>VGGT</td><td>Random</td><td>224x224</td><td>RE10K</td><td>2-10</td><td>&#10007;</td>
+    </tr>
+    <tr><td colspan="7"><strong>NAS3R can also use pretrained weights for initialization while remaining self-supervised with no 3D labels.</strong></td></tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained.ckpt">re10k_nas3r_pretrained.ckpt</a></td>
+      <td>VGGT</td><td>VGGT</td><td>224x224</td><td>RE10K</td><td>2</td><td>&#10007;</td>
+    </tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained_multiview.ckpt">re10k_nas3r_pretrained_multiview.ckpt</a></td>
+      <td>VGGT</td><td>VGGT</td><td>224x224</td><td>RE10K</td><td>2-10</td><td>&#10007;</td>
+    </tr>
+    <tr><td colspan="7"><strong>When camera intrinsics are available, models ending in <code>-I</code> can take them as an additional input.</strong></td></tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r_pretrained-I.ckpt">re10k_nas3r_pretrained-I.ckpt</a></td>
+      <td>VGGT</td><td>VGGT</td><td>224x224</td><td>RE10K</td><td>2</td><td>Intrinsics</td>
+    </tr>
+    <tr><td colspan="7"><strong>NAS3R is architecture-flexible and also supports a Multi-view MASt3R-style variant, denoted by <code>nas3r-m</code>.</strong></td></tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r-m.ckpt">re10k_nas3r-m.ckpt</a></td>
+      <td>MASt3R</td><td>Random</td><td>256x256</td><td>RE10K</td><td>2</td><td>&#10007;</td>
+    </tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r-m_pretrained.ckpt">re10k_nas3r-m_pretrained.ckpt</a></td>
+      <td>MASt3R</td><td>MASt3R</td><td>256x256</td><td>RE10K</td><td>2</td><td>&#10007;</td>
+    </tr>
+    <tr>
+      <td><a href="https://huggingface.co/RanranHuang/NAS3R/resolve/main/re10k_nas3r-m_pretrained-I.ckpt">re10k_nas3r-m_pretrained-I.ckpt</a></td>
+      <td>MASt3R</td><td>MASt3R</td><td>256x256</td><td>RE10K</td><td>2</td><td>Intrinsics</td>
+    </tr>
+  </tbody>
+</table>
 
 
 We assume the downloaded weights are located in the `checkpoints` directory.
@@ -116,31 +159,34 @@ python -m src.main +experiment=nas3r/pretrained/re10k-I wandb.mode=online wandb.
 python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
     dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
     dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
-    checkpointing.load=./checkpoints/re10k_nas3r.ckpt \
-    test.save_image=false 
+    checkpointing.load=./checkpoints/re10k_nas3r.ckpt 
 
 # RealEstate10K on NAS3R, 10 view
 python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
     dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
     dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
     dataset.re10k.view_sampler.num_context_views=10 \
-    checkpointing.load=./checkpoints/re10k_nas3r_multiview.ckpt \
-    test.save_image=false 
+    checkpointing.load=./checkpoints/re10k_nas3r_multiview.ckpt 
 
 
 # RealEstate10K on NAS3R pretrained from VGGT
 python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
     dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
     dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
-    checkpointing.load=./checkpoints/re10k_nas3r_pretrained.ckpt \
-    test.save_image=false 
+    checkpointing.load=./checkpoints/re10k_nas3r_pretrained.ckpt 
+
+# RealEstate10K on NAS3R pretrained from VGGT, 10view
+python -m src.main +experiment=nas3r/random/re10k mode=test wandb.name=re10k \
+    dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
+    dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
+    dataset.re10k.view_sampler.num_context_views=10 \
+    checkpointing.load=./checkpoints/re10k_nas3r_pretrained_multiview.ckpt 
 
 # RealEstate10K on NAS3R pretrained from VGGT, incorporate GT intrinsics
 python -m src.main +experiment=nas3r/random/re10k-I mode=test wandb.name=re10k \
     dataset/view_sampler@dataset.re10k.view_sampler=evaluation \
     dataset.re10k.view_sampler.index_path=assets/evaluation_index_re10k.json \
-    checkpointing.load=./checkpoints/re10k_nas3r_pretrained-I.ckpt \
-    test.save_image=false 
+    checkpointing.load=./checkpoints/re10k_nas3r_pretrained-I.ckpt 
 
 
 ```
@@ -150,16 +196,18 @@ We follow the [pixelSplat](https://github.com/dcharatan/pixelsplat) camera syste
 The camera extrinsic matrices are OpenCV-style camera-to-world matrices ( +X right, +Y down, +Z camera looks into the screen).
 
 ## Acknowledgements
-This project is built upon these excellent repositories:[SPFSplatV2](https://github.com/ranrhuang/SPFSplatV2), [SPFSplat](https://github.com/ranrhuang/SPFSplat), [NoPoSplat](https://github.com/cvg/NoPoSplat), [pixelSplat](https://github.com/dcharatan/pixelsplat), [DUSt3R](https://github.com/naver/dust3r), and [CroCo](https://github.com/naver/croco). We thank the original authors for their excellent work.
+NAS3R evolves from and extends our previous works, [SPFSplatV2](https://github.com/ranrhuang/SPFSplatV2) and [SPFSplat](https://github.com/ranrhuang/SPFSplat). It also builds upon the excellent open-source projects [NoPoSplat](https://github.com/cvg/NoPoSplat), [pixelSplat](https://github.com/dcharatan/pixelsplat), [DUSt3R](https://github.com/naver/dust3r), and [CroCo](https://github.com/naver/croco). We sincerely thank their authors for making their work publicly available.
 
 
 ## Citation
 
 ```
-@article{huang2026nas3r,
-      title={From None to All: Self-Supervised 3D Reconstruction via Novel View Synthesis} ,
-      author={Ranran Huang and Weixun Luo and Ye Mao and Krystian Mikolajczyk},
-      journal={arXiv preprint arXiv: 2603.27455},
-      year={2026}
+@InProceedings{huang2026nas3r,
+    author    = {Huang, Ranran and Luo, Weixun and Mao, Ye and Mikolajczyk, Krystian},
+    title     = {From None to All: Self-Supervised 3D Reconstruction via Novel View Synthesis},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2026},
+    pages     = {37358-37369}
 }
 ```
